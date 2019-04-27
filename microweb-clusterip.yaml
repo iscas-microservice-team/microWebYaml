@@ -1,0 +1,155 @@
+######################
+# microweb-ui-service#
+######################
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: microweb-ui-svc
+  namespace: default
+spec:
+  # externalTrafficPolicy: Local
+  ports:
+  - protocol: TCP
+    port: 80
+    # targetPort: 30080
+    nodePort: 30080
+  clusterIP: 10.96.0.4
+  selector:
+    app: microweb-ui
+  type: NodePort
+---
+######################
+# microweb-ui-v1     #
+######################
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: microweb-ui-deployment-v1
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        # service identifier
+        app: microweb-ui
+        version: v1
+    spec:
+      containers:
+      - name: microweb-webui
+        image: xinyaotian/microweb-ui:0.0.2
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: DB_MANAGER_IP
+          value: "10.96.0.5"
+        - name: DB_MANAGER_PORT
+          value: "9090"
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: "1"
+            memory: 256Mi
+          requests:
+            cpu: "0.01"
+            memory: 8Mi
+---
+######################
+# microweb-ui-v2     #
+######################
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: microweb-ui-deployment-v2
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        # service identifier
+        app: microweb-ui
+        version: v2
+    spec:
+      containers:
+      - name: microweb-webui
+        image: xinyaotian/microweb-ui:1.0.2
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: DB_MANAGER_IP
+          value: "10.96.0.5"
+        - name: DB_MANAGER_PORT
+          value: "9090"
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: "1"
+            memory: 512Mi
+          requests:
+            cpu: "0.01"
+            memory: 16Mi
+---
+##################################
+# microweb-dbmanager-service     #
+##################################
+apiVersion: v1
+kind: Service
+metadata:
+  name: microweb-dbmanager-svc
+  namespace: default
+spec:
+  selector:
+    app: psqlmanager
+  # externalTrafficPolicy: Local
+  ports:
+    - protocol: TCP
+      port: 9090
+      targetPort: 9090
+      # nodePort: 30090
+  clusterIP: 10.96.0.5
+  # loadBalancerIP: 78.11.24.19
+  type: ClusterIP
+---
+##################################
+# microweb-dbmanager-deploy      #
+##################################
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: microweb-dbmanager-deployment
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: psqlmanager
+    spec:
+      containers:
+      - name: microweb-dbmanager
+        image: xinyaotian/psqlmanager:0.0.2
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: POSTGRES_SSLMODE
+          value: "disable"
+        - name: POSTGRES_PROTOCOL
+          value: "postgres"
+        - name: POSTGRES_IPADDR
+          value: "174.137.53.55"
+        - name: POSTGRES_PORT
+          value: "5432"
+        - name: POSTGRES_USERNAME
+          value: "dbuser"
+        - name: POSTGRES_PASSWORD
+          value: "docker"
+        - name: POSTGRES_DBNAME
+          value: "testdb"
+        ports:
+        - containerPort: 9090
+        resources:
+          limits:
+            cpu: "1"
+            memory: 256Mi
+          requests:
+            cpu: "0.01"
+            memory: 8Mi
+---
