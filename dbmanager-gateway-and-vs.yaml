@@ -1,0 +1,74 @@
+---
+#####################################################
+#  microweb-dbmanager-gateway
+#---------------------------------------------------#
+# gateway 的作用是将微服务应用提供的服务
+# 通过与 ingressgateway 从而暴露出来
+# 通常与 VirtualService(配置提供的uri) 配合使用
+#---------------------------------------------------#
+# 自身配置中的 metadata.name 需要与 VirtualService 中
+# 的 spec.gateways 相匹配
+#---------------------------------------------------#
+# 注意: 这个 gateway 只是用于测试的, 实际使用时
+# 只需为整个微服务应用配置一个 gateway 即可
+#####################################################
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: microweb-dbmanager-gateway
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+---
+#####################################################
+#  microweb-dbmanager-vs
+#---------------------------------------------------#
+# VirtualService 通常用于 WEB 应用 和 RESTful API 服务,
+# 通常用于指定可访问的 uri 或 uri 的匹配类型
+# 与 gateway 和相应服务的 Service 配合使用
+#---------------------------------------------------#
+# 自身配置中的 mspec.gateways 需要与 gateway 中
+# 的 etadata.name 相匹配
+#---------------------------------------------------#
+# 自身配置中的 spec.route.- destination.host 需要与相应
+# Service 的 metadata.name 一致才能正确对应
+#---------------------------------------------------#
+# ps: 自身配置中 spec.http.- match.uri 有 2 种基本类型,
+# 第 1 种: exact 用于书写规范的 uri
+# 第 2 种: prefix 则用来书写匹配形uri,
+#         例如 /uid/:number 可写为 prefix: /uid/
+#####################################################
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: microweb-dbmanager-vs
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - microweb-dbmanager-gateway
+  http:
+  - match:
+    - uri:
+        exact: /
+    - uri:
+        exact: /all-queries
+    - uri:
+        prefix: /insert-post/
+    - uri:
+        prefix: /queries/
+    route:
+    - destination:
+        host: microweb-dbmanager-svc
+        port:
+          number: 9090
+---

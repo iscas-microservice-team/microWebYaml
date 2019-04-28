@@ -1,7 +1,8 @@
 ############################################
-#            dbmanager-egress              #
-# 控制 Istio 集群内部 pod 访问外部服务或 API  #
-# 在此配置之后即可实现访问, 否则内部访问会 404  #
+#            dbmanager-egress
+#------------------------------------------#
+# 控制 Istio 集群内部 pod 访问外部服务或 API
+# 在此配置之后即可实现访问, 否则内部访问会 404
 ############################################
 ---
 apiVersion: networking.istio.io/v1alpha3
@@ -22,3 +23,4 @@ spec:
     #name: https
     #protocol: HTTPS
   resolution: DNS
+---
