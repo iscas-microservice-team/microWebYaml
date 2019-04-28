@@ -17,6 +17,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
   name: microweb-dbmanager-gateway
+  namespace: default
 spec:
   selector:
     istio: ingressgateway # use istio default controller
@@ -51,6 +52,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
   name: microweb-dbmanager-vs
+  namespace: default
 spec:
   hosts:
   - "*"

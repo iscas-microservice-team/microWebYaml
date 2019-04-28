@@ -9,6 +9,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: ServiceEntry
 metadata:
   name: microweb-dbmanager-egress
+  namespace: default
 spec:
   hosts:
   - 174.137.53.55
