@@ -1,0 +1,95 @@
+---
+######################
+# microweb-webui-svc #
+######################
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: microweb-webui-svc
+  namespace: default
+spec:
+  # externalTrafficPolicy: Local
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+    # nodePort: 30080
+  clusterIP: 10.96.0.8
+  selector:
+    app: microweb-ui
+  # type: NodePort
+  type: ClusterIP
+---
+######################
+# microweb-webui-v1     #
+######################
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: microweb-webui-deployment-v1
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        # service identifier
+        app: microweb-ui
+        version: v1
+    spec:
+      containers:
+      - name: microweb-webui
+        image: xinyaotian/microweb-ui:0.0.2
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: DB_MANAGER_IP
+          value: "10.96.0.9"
+        - name: DB_MANAGER_PORT
+          value: "9090"
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: "1"
+            memory: 256Mi
+          # requests:
+            # cpu: "0.2"
+            # memory: 128Mi
+---
+######################
+# microweb-webui-v2     #
+######################
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: microweb-webui-deployment-v2
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        # service identifier
+        app: microweb-ui
+        version: v2
+    spec:
+      containers:
+      - name: microweb-webui
+        image: xinyaotian/microweb-ui:1.0.2
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: DB_MANAGER_IP
+          value: "10.96.0.9"
+        - name: DB_MANAGER_PORT
+          value: "9090"
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: "1"
+            memory: 512Mi
+          # requests:
+            # cpu: "0.2"
+            # memory: 128Mi
+---
