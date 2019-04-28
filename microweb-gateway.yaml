@@ -1,4 +1,45 @@
 ######################
+# microweb-gateway   #
+######################
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: microweb-gateway
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+---
+######################
+# microweb-vs        #
+######################
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: microweb-vs
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - microweb-gateway
+  http:
+  - match:
+    - uri:
+        exact: /
+    - uri:
+        exact: /announcement
+    route:
+    - destination:
+        host: microweb-ui-svc
+        port:
+          number: 80
+######################
 # microweb-ui-service#
 ######################
 ---
@@ -12,12 +53,12 @@ spec:
   ports:
   - protocol: TCP
     port: 80
-    # targetPort: 30080
-    nodePort: 30080
+    targetPort: 12080
+    # nodePort: 30080
   clusterIP: 10.96.0.4
   selector:
     app: microweb-ui
-  type: NodePort
+  type: ClusterIP
 ---
 ######################
 # microweb-ui-v1     #
@@ -149,7 +190,7 @@ spec:
           limits:
             cpu: "1"
             memory: 256Mi
-#          requests:
-#            cpu: "0.01"
-#            memory: 8Mi
+          requests:
+            cpu: "0.01"
+            memory: 8Mi
 ---

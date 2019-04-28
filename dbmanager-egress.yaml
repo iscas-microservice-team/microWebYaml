@@ -1,0 +1,24 @@
+############################################
+#            dbmanager-egress              #
+# 控制 Istio 集群内部 pod 访问外部服务或 API  #
+# 在此配置之后即可实现访问, 否则内部访问会 404  #
+############################################
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: microweb-dbmanager-egress
+spec:
+  hosts:
+  - 174.137.53.55
+  ports:
+  - number: 5432
+    name: postsql-port
+    # 由于这里postgres数据库链接有自己基于 TCP 协议实现的 postgres 协议
+    # 故 protocol 协议名称不能使用 HTTP 而要使用 TCP
+    protocol: TCP
+  # 在下面继续罗列端口即可让集群内部的 pod 访问其他端口
+  #- number: 443
+    #name: https
+    #protocol: HTTPS
+  resolution: DNS
