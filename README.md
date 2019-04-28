@@ -11,9 +11,10 @@
 
 1. Postgres 数据库模块(基于 Docker 镜像进行启动)
 
-    
-    // 基于 Docker 的 Postgres 数据库部署
+    ```bash
+    # 基于 Docker 的 Postgres 数据库部署
     https://zhuanlan.zhihu.com/p/62775096
+    ```
 
 - 注意事项
 
@@ -24,11 +25,12 @@
     
 2. 数据资源层模块 postgresManager
 
-       
-    // Github 源码仓库
+    ```bash
+    # Github 源码仓库
     https://github.com/XinyaoTian/postgresManager
-    // DockerHub 镜像仓库
+    # DockerHub 镜像仓库
     https://cloud.docker.com/u/xinyaotian/repository/docker/xinyaotian/psqlmanager
+    ```
     
 - 简介
     
@@ -54,11 +56,12 @@
     
 3. UI 表现层 / 用户交互层 WebUI
 
-
-    // Github 源码仓库
+    ```bash
+    # Github 源码仓库
     https://github.com/XinyaoTian/microWebApp
-    // DockerHub 镜像仓库
+    # DockerHub 镜像仓库
     https://cloud.docker.com/u/xinyaotian/repository/docker/xinyaotian/microweb-ui
+    ```
 
 - 简介
 
