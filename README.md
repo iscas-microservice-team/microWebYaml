@@ -1,5 +1,7 @@
 # 自研发微服务 MicroApp 的 Istio 部署 yaml
 
+该微服务应用的各项组件和 yaml 均经过 Kubernetes v1.13.1 版本 和 Istio 1.0.6 版本的测试。
+
 
 ## 研发说明及相关项目
 
